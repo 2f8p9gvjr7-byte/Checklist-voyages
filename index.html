@@ -3,95 +3,357 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0d1b2a">
-<meta name="mobile-web-app-capable" content="yes">
+<title>Voyage</title>
+
+<!-- Anti-cache : force le navigateur à toujours récupérer la dernière version -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Voyage">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<title>✈ Check-list Voyage</title>
+<meta name="theme-color" content="#0d1b2a">
+
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%230d1b2a'/><rect x='30' y='30' width='120' height='120' rx='14' fill='none' stroke='%23ffd60a' stroke-width='6'/><path d='M55 90 l20 20 l50 -50' fill='none' stroke='%2306d6a0' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/><circle cx='130' cy='50' r='10' fill='%23e63946'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%230d1b2a'/><rect x='30' y='30' width='120' height='120' rx='14' fill='none' stroke='%23ffd60a' stroke-width='6'/><path d='M55 90 l20 20 l50 -50' fill='none' stroke='%2306d6a0' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/><circle cx='130' cy='50' r='10' fill='%23e63946'/></svg>">
+
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #0d1b2a; color: #fff; min-height: 100vh;
+    background: #0d1b2a;
+    color: #fff;
+    min-height: 100vh;
     padding: 12px;
     padding-top: max(12px, env(safe-area-inset-top));
     padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom)));
     padding-left: max(12px, env(safe-area-inset-left));
     padding-right: max(12px, env(safe-area-inset-right));
   }
-  header { background:#1b263b; border:2px solid #ffd60a; border-radius:12px; padding:14px 16px; margin-bottom:14px; text-align:center; }
-  header h1 { color:#ffd60a; font-size:22px; font-weight:800; letter-spacing:0.5px; }
-  header p { color:#a8dadc; font-size:13px; margin-top:4px; }
-  .voyage-bar { background:#1b263b; border-radius:12px; padding:10px; margin-bottom:14px; border:2px solid #ffd60a; }
-  .voyage-label { font-size:11px; color:#ffd60a; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; font-weight:700; text-align:center; }
-  .voyage-controls { display:grid; grid-template-columns:1fr auto auto auto; gap:6px; align-items:stretch; }
-  .voyage-select { background:#ffd60a; color:#0d1b2a; border:none; border-radius:8px; padding:10px 28px 10px 8px; font-size:15px; font-weight:800; text-align:center; text-align-last:center; -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5 8l5 5 5-5' stroke='%230d1b2a' stroke-width='2' fill='none' stroke-linecap='round'/></svg>"); background-repeat:no-repeat; background-position:right 8px center; background-size:16px; min-width:0; }
-  .v-btn { background:#415a77; color:#fff; border:none; border-radius:8px; padding:0 10px; font-size:18px; font-weight:800; cursor:pointer; min-width:40px; display:flex; align-items:center; justify-content:center; }
-  .v-btn:active { transform:scale(0.94); }
-  .v-btn.add { background:#06d6a0; color:#0d1b2a; }
-  .v-btn.delete { background:#e63946; }
-  .v-btn:disabled { opacity:0.4; cursor:not-allowed; }
-  .tabs { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:14px; }
-  .tab { background:#415a77; color:#fff; border:2px solid #415a77; border-radius:10px; padding:10px 4px; font-size:12px; font-weight:700; cursor:pointer; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; transition:transform 0.05s; }
-  .tab:active { transform:scale(0.96); }
-  .tab.active { background:#ffd60a; color:#0d1b2a; border-color:#ffd60a; }
-  .tab .num { display:block; font-size:10px; opacity:0.7; margin-bottom:2px; }
-  .tab.active .num { opacity:0.6; }
-  .person-name-wrap { background:#1b263b; border-radius:12px; padding:12px; margin-bottom:14px; border:2px solid #415a77; }
-  .person-name-wrap label { display:block; font-size:11px; color:#a8dadc; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; font-weight:700; }
-  .person-name-input { width:100%; background:#fff700; color:#0d1b2a; border:none; border-radius:8px; padding:14px 12px; font-size:18px; font-weight:800; text-align:center; }
-  .person-name-input:focus { outline:3px solid #ffb703; }
-  .rubrique { background:#1b263b; border-radius:12px; margin-bottom:12px; border:2px solid #415a77; overflow:hidden; }
-  .rubrique-header { background:#415a77; padding:10px 12px; }
-  .rubrique-title-input { width:100%; background:#ffd60a; color:#0d1b2a; border:none; border-radius:6px; padding:10px; font-size:15px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; text-align:center; }
-  .rubrique-title-input:focus { outline:3px solid #ffb703; }
-  .items { padding:8px; }
-  .item-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-  .check-btn { flex-shrink:0; width:36px; height:36px; border-radius:8px; border:2px solid #778da9; background:#0d1b2a; color:transparent; font-size:20px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-  .check-btn.checked { background:#06d6a0; border-color:#06d6a0; color:#0d1b2a; }
-  .check-btn:active { transform:scale(0.92); }
-  .item-input { flex:1; background:#e0e1dd; color:#0d1b2a; border:1px solid #778da9; border-radius:6px; padding:10px; font-size:15px; font-weight:500; min-width:0; }
-  .item-input:focus { outline:2px solid #ffd60a; background:#fff; }
-  .item-input.checked { text-decoration:line-through; color:#778da9; background:#2a3a52; }
-  .add-item-btn { width:100%; background:transparent; color:#a8dadc; border:2px dashed #415a77; border-radius:8px; padding:10px; font-size:14px; font-weight:600; cursor:pointer; margin-top:4px; }
-  .add-item-btn:active { background:#2a3a52; }
-  .delete-item-btn { flex-shrink:0; width:28px; height:36px; background:transparent; color:#e63946; border:none; font-size:18px; font-weight:700; cursor:pointer; }
-  .progress-bar { background:#1b263b; border-radius:12px; padding:10px 14px; margin-bottom:14px; border:2px solid #415a77; }
-  .progress-text { display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:#a8dadc; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px; }
-  .progress-track { height:8px; background:#0d1b2a; border-radius:4px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,#06d6a0,#ffd60a); transition:width 0.3s; border-radius:4px; }
-  .reset-btn { position:fixed; bottom:max(12px,env(safe-area-inset-bottom)); left:12px; right:12px; background:#2a3a52; color:#a8dadc; border:2px solid #415a77; border-radius:12px; padding:12px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.4); z-index:100; }
-  .reset-btn:active { transform:scale(0.97); }
-  .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:200; align-items:center; justify-content:center; padding:20px; }
-  .modal-bg.show { display:flex; }
-  .modal { background:#1b263b; border:2px solid #ffd60a; border-radius:14px; padding:20px; max-width:360px; width:100%; text-align:center; }
-  .modal h3 { color:#ffd60a; font-size:18px; margin-bottom:8px; }
-  .modal p { color:#e0e1dd; font-size:14px; margin-bottom:16px; line-height:1.4; }
-  .modal input { width:100%; background:#fff700; color:#0d1b2a; border:none; border-radius:8px; padding:12px; font-size:16px; font-weight:700; text-align:center; margin-bottom:16px; }
-  .modal-buttons { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .modal button { padding:12px; border-radius:8px; font-weight:800; font-size:14px; border:none; cursor:pointer; text-transform:uppercase; }
-  .modal-cancel { background:#415a77; color:#fff; }
-  .modal-confirm { background:#06d6a0; color:#0d1b2a; }
-  .modal-confirm.danger { background:#e63946; color:#fff; }
+
+  header {
+    background: #1b263b;
+    border: 2px solid #ffd60a;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  header h1 { color: #ffd60a; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+  header p { color: #a8dadc; font-size: 13px; margin-top: 4px; }
+
+  /* Sélecteur de voyage */
+  .voyage-bar {
+    background: #1b263b;
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 14px;
+    border: 2px solid #ffd60a;
+  }
+  .voyage-label {
+    font-size: 11px;
+    color: #ffd60a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .voyage-controls {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto;
+    gap: 6px;
+    align-items: stretch;
+  }
+  .voyage-select {
+    background: #ffd60a;
+    color: #0d1b2a;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 8px;
+    font-size: 15px;
+    font-weight: 800;
+    text-align: center;
+    text-align-last: center;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5 8l5 5 5-5' stroke='%230d1b2a' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 28px;
+    min-width: 0;
+  }
+  .v-btn {
+    background: #415a77;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0 8px;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .v-btn:active { transform: scale(0.94); }
+  .v-btn.add { background: #06d6a0; color: #0d1b2a; }
+  .v-btn.duplicate { background: #4cc9f0; color: #0d1b2a; }
+  .v-btn.rename { background: #415a77; }
+  .v-btn.delete { background: #e63946; }
+  .v-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .tab {
+    background: #415a77;
+    color: #fff;
+    border: 2px solid #415a77;
+    border-radius: 10px;
+    padding: 10px 4px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: transform 0.05s;
+  }
+  .tab:active { transform: scale(0.96); }
+  .tab.active { background: #ffd60a; color: #0d1b2a; border-color: #ffd60a; }
+  .tab .num { display: block; font-size: 10px; opacity: 0.7; margin-bottom: 2px; }
+  .tab.active .num { opacity: 0.6; }
+
+  .person-name-wrap {
+    background: #1b263b;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 14px;
+    border: 2px solid #415a77;
+  }
+  .person-name-wrap label {
+    display: block;
+    font-size: 11px;
+    color: #a8dadc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .person-name-input {
+    width: 100%;
+    background: #fff700;
+    color: #0d1b2a;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 12px;
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+  }
+  .person-name-input:focus { outline: 3px solid #ffb703; }
+
+  .rubrique {
+    background: #1b263b;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 2px solid #415a77;
+    overflow: hidden;
+  }
+  .rubrique-header { background: #415a77; padding: 10px 12px; }
+  .rubrique-title-input {
+    width: 100%;
+    background: #ffd60a;
+    color: #0d1b2a;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 10px;
+    font-size: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+  .rubrique-title-input:focus { outline: 3px solid #ffb703; }
+
+  .items { padding: 8px; }
+  .item-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .check-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid #778da9;
+    background: #0d1b2a;
+    color: transparent;
+    font-size: 20px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .check-btn.checked { background: #06d6a0; border-color: #06d6a0; color: #0d1b2a; }
+  .check-btn:active { transform: scale(0.92); }
+
+  .item-input {
+    flex: 1;
+    background: #e0e1dd;
+    color: #0d1b2a;
+    border: 1px solid #778da9;
+    border-radius: 6px;
+    padding: 10px 10px;
+    font-size: 15px;
+    font-weight: 500;
+    min-width: 0;
+  }
+  .item-input:focus { outline: 2px solid #ffd60a; background: #fff; }
+  .item-input.checked { text-decoration: line-through; color: #778da9; background: #2a3a52; }
+
+  .add-item-btn {
+    width: 100%;
+    background: transparent;
+    color: #a8dadc;
+    border: 2px dashed #415a77;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .add-item-btn:active { background: #2a3a52; }
+
+  .delete-item-btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 36px;
+    background: transparent;
+    color: #e63946;
+    border: none;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .progress-bar {
+    background: #1b263b;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    border: 2px solid #415a77;
+  }
+  .progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: #a8dadc;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .progress-track { height: 8px; background: #0d1b2a; border-radius: 4px; overflow: hidden; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #06d6a0, #ffd60a);
+    transition: width 0.3s;
+    border-radius: 4px;
+  }
+
+  .reset-btn {
+    position: fixed;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 12px;
+    right: 12px;
+    background: #2a3a52;
+    color: #a8dadc;
+    border: 2px solid #415a77;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 100;
+  }
+  .reset-btn:active { transform: scale(0.97); }
+
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: #1b263b;
+    border: 2px solid #ffd60a;
+    border-radius: 14px;
+    padding: 20px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+  }
+  .modal h3 { color: #ffd60a; font-size: 18px; margin-bottom: 8px; }
+  .modal p { color: #e0e1dd; font-size: 14px; margin-bottom: 16px; line-height: 1.4; }
+  .modal input {
+    width: 100%;
+    background: #fff700;
+    color: #0d1b2a;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .modal-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .modal button {
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .modal-cancel { background: #415a77; color: #fff; }
+  .modal-confirm { background: #06d6a0; color: #0d1b2a; }
+  .modal-confirm.danger { background: #e63946; color: #fff; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>✈ CHECK-LIST VOYAGE</h1>
-  <p>5 personnes &bull; 8 rubriques chacune</p>
+  <p>5 personnes • 8 rubriques chacune <span style="opacity:0.5;font-size:11px;">• v1.2</span></p>
 </header>
 
 <div class="voyage-bar">
   <div class="voyage-label" id="voyageLabel">Voyage en cours</div>
   <div class="voyage-controls">
     <select class="voyage-select" id="voyageSelect"></select>
-    <button class="v-btn rename" onclick="askRenameVoyage()" title="Renommer">&#9998;</button>
+    <button class="v-btn rename" onclick="askRenameVoyage()" title="Renommer">✎</button>
     <button class="v-btn add" id="addVoyageBtn" onclick="addVoyage()" title="Nouveau voyage">+</button>
-    <button class="v-btn delete" id="delVoyageBtn" onclick="askDeleteVoyage()" title="Supprimer">&#128465;</button>
+    <button class="v-btn duplicate" id="dupVoyageBtn" onclick="duplicateVoyage()" title="Dupliquer ce voyage">⧉</button>
+    <button class="v-btn delete" id="delVoyageBtn" onclick="askDeleteVoyage()" title="Supprimer ce voyage">🗑</button>
   </div>
 </div>
 
@@ -104,14 +366,16 @@
 </div>
 
 <div class="tabs" id="tabs"></div>
+
 <div id="personPanel"></div>
 
-<button class="reset-btn" onclick="askResetAll()">&#9888; Tout effacer (tous les voyages)</button>
+<button class="reset-btn" onclick="askResetAll()">⚠ Tout effacer (tous les voyages)</button>
 
+<!-- Modale renommer voyage -->
 <div class="modal-bg" id="modalRename">
   <div class="modal">
     <h3>Nom du voyage</h3>
-    <input type="text" id="renameInput" maxlength="40" placeholder="Ex: Italie ao&ucirc;t 2026" />
+    <input type="text" id="renameInput" maxlength="40" placeholder="Ex: Italie août 2026" />
     <div class="modal-buttons">
       <button class="modal-cancel" onclick="closeModal('modalRename')">Annuler</button>
       <button class="modal-confirm" onclick="confirmRename()">Valider</button>
@@ -119,10 +383,11 @@
   </div>
 </div>
 
+<!-- Modale supprimer un voyage -->
 <div class="modal-bg" id="modalDeleteVoyage">
   <div class="modal">
     <h3>Supprimer ce voyage ?</h3>
-    <p>Le voyage <strong id="delVoyageName"></strong> et toutes ses saisies seront d&eacute;finitivement perdus.</p>
+    <p>Le voyage <strong id="delVoyageName"></strong> et toutes ses saisies seront définitivement perdus.</p>
     <div class="modal-buttons">
       <button class="modal-cancel" onclick="closeModal('modalDeleteVoyage')">Annuler</button>
       <button class="modal-confirm danger" onclick="confirmDeleteVoyage()">Supprimer</button>
@@ -130,10 +395,11 @@
   </div>
 </div>
 
+<!-- Modale tout effacer -->
 <div class="modal-bg" id="modalResetAll">
   <div class="modal">
     <h3>Tout effacer ?</h3>
-    <p>Cela supprimera <strong>tous les voyages</strong> et toutes leurs saisies. Action irr&eacute;versible.</p>
+    <p>Cela supprimera <strong>tous les voyages</strong> et toutes leurs saisies. Action irréversible.</p>
     <div class="modal-buttons">
       <button class="modal-cancel" onclick="closeModal('modalResetAll')">Annuler</button>
       <button class="modal-confirm danger" onclick="doResetAll()">Tout effacer</button>
@@ -141,167 +407,333 @@
   </div>
 </div>
 
+<!-- Modale limite atteinte -->
 <div class="modal-bg" id="modalLimit">
   <div class="modal">
     <h3>Limite atteinte</h3>
-    <p>Vous avez d&eacute;j&agrave; <strong>10 voyages</strong>. Supprimez un voyage existant pour en ajouter un nouveau.</p>
-    <div class="modal-buttons" style="grid-template-columns:1fr;">
+    <p>Tu as déjà <strong>10 voyages</strong> en cours. Supprime un voyage existant pour en ajouter un nouveau.</p>
+    <div class="modal-buttons" style="grid-template-columns: 1fr;">
       <button class="modal-cancel" onclick="closeModal('modalLimit')">OK</button>
     </div>
   </div>
 </div>
 
 <script>
-var STORAGE_KEY='checklist_voyage_v3';
-var NB_PERSONNES=5, NB_RUBRIQUES=8, MAX_VOYAGES=10;
+const STORAGE_KEY = 'checklist_voyage_v3';
+const NB_PERSONNES = 5;
+const NB_RUBRIQUES = 8;
+const MAX_VOYAGES = 10;
 
-function emptyVoyage(nom){
-  var personnes=[];
-  for(var i=0;i<NB_PERSONNES;i++){
-    var rubriques=[];
-    for(var j=0;j<NB_RUBRIQUES;j++) rubriques.push({titre:'',items:[{texte:'',coche:false}]});
-    personnes.push({nom:'',rubriques:rubriques});
+function emptyVoyage(nom) {
+  const personnes = [];
+  for (let i = 0; i < NB_PERSONNES; i++) {
+    const rubriques = [];
+    for (let j = 0; j < NB_RUBRIQUES; j++) {
+      rubriques.push({ titre: '', items: [{ texte: '', coche: false }] });
+    }
+    personnes.push({ nom: '', rubriques });
   }
-  return{id:'v_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),nom:nom||'Voyage 1',personnes:personnes,activePerson:0};
+  return { id: 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), nom: nom || 'Voyage 1', personnes, activePerson: 0 };
 }
-function defaultData(){return{voyages:[emptyVoyage('Voyage 1')],activeVoyageId:null};}
 
-var data;
-try{
-  var raw=localStorage.getItem(STORAGE_KEY);
-  data=raw?JSON.parse(raw):defaultData();
-  if(!data.voyages||!Array.isArray(data.voyages)||data.voyages.length===0) data=defaultData();
-  data.voyages.forEach(function(v){
-    if(!v.id) v.id='v_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
-    if(typeof v.activePerson!=='number') v.activePerson=0;
-    if(!Array.isArray(v.personnes)||v.personnes.length!==NB_PERSONNES){v.personnes=emptyVoyage().personnes;}
-    else v.personnes.forEach(function(p){if(!Array.isArray(p.rubriques)||p.rubriques.length!==NB_RUBRIQUES) p.rubriques=emptyVoyage().personnes[0].rubriques;});
+function defaultData() {
+  return { voyages: [emptyVoyage('Voyage 1')], activeVoyageId: null };
+}
+
+let data;
+try {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  data = raw ? JSON.parse(raw) : defaultData();
+  if (!data.voyages || !Array.isArray(data.voyages) || data.voyages.length === 0) {
+    data = defaultData();
+  }
+  // Migration : s'assurer que chaque voyage a la bonne structure
+  data.voyages.forEach(v => {
+    if (!v.id) v.id = 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+    if (typeof v.activePerson !== 'number') v.activePerson = 0;
+    if (!Array.isArray(v.personnes) || v.personnes.length !== NB_PERSONNES) {
+      const empty = emptyVoyage();
+      v.personnes = empty.personnes;
+    } else {
+      v.personnes.forEach(p => {
+        if (!Array.isArray(p.rubriques) || p.rubriques.length !== NB_RUBRIQUES) {
+          const empty = emptyVoyage();
+          p.rubriques = empty.personnes[0].rubriques;
+        }
+      });
+    }
   });
-  if(!data.activeVoyageId||!data.voyages.find(function(v){return v.id===data.activeVoyageId;})) data.activeVoyageId=data.voyages[0].id;
-}catch(e){data=defaultData();data.activeVoyageId=data.voyages[0].id;}
+  if (!data.activeVoyageId || !data.voyages.find(v => v.id === data.activeVoyageId)) {
+    data.activeVoyageId = data.voyages[0].id;
+  }
+} catch(e) { data = defaultData(); data.activeVoyageId = data.voyages[0].id; }
 
-function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}}
-function currentVoyage(){return data.voyages.find(function(v){return v.id===data.activeVoyageId;})||data.voyages[0];}
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+}
 
-function renderVoyageSelect(){
-  var sel=document.getElementById('voyageSelect');
-  sel.innerHTML='';
-  data.voyages.forEach(function(v,idx){
-    var opt=document.createElement('option');
-    opt.value=v.id;
-    opt.textContent=v.nom||('Voyage '+(idx+1));
-    if(v.id===data.activeVoyageId) opt.selected=true;
+function currentVoyage() {
+  return data.voyages.find(v => v.id === data.activeVoyageId) || data.voyages[0];
+}
+
+// === Voyages ===
+function renderVoyageSelect() {
+  const sel = document.getElementById('voyageSelect');
+  sel.innerHTML = '';
+  data.voyages.forEach((v, idx) => {
+    const opt = document.createElement('option');
+    opt.value = v.id;
+    opt.textContent = (v.nom || `Voyage ${idx+1}`);
+    if (v.id === data.activeVoyageId) opt.selected = true;
     sel.appendChild(opt);
   });
-  sel.onchange=function(e){data.activeVoyageId=e.target.value;save();renderAll();};
-  document.getElementById('addVoyageBtn').disabled=(data.voyages.length>=MAX_VOYAGES);
-  document.getElementById('delVoyageBtn').disabled=(data.voyages.length<=1);
-  document.getElementById('voyageLabel').textContent='Voyage en cours ('+data.voyages.length+'/'+MAX_VOYAGES+')';
+  sel.onchange = (e) => {
+    data.activeVoyageId = e.target.value;
+    save();
+    renderAll();
+  };
+
+  document.getElementById('addVoyageBtn').disabled = (data.voyages.length >= MAX_VOYAGES);
+  document.getElementById('dupVoyageBtn').disabled = (data.voyages.length >= MAX_VOYAGES);
+  document.getElementById('delVoyageBtn').disabled = (data.voyages.length <= 1);
+
+  document.getElementById('voyageLabel').textContent =
+    `Voyage en cours (${data.voyages.length}/${MAX_VOYAGES})`;
 }
 
-function addVoyage(){
-  if(data.voyages.length>=MAX_VOYAGES){document.getElementById('modalLimit').classList.add('show');return;}
-  var n=data.voyages.length+1;
-  var nv=emptyVoyage('Voyage '+n);
-  data.voyages.push(nv);data.activeVoyageId=nv.id;save();renderAll();
+function addVoyage() {
+  if (data.voyages.length >= MAX_VOYAGES) {
+    document.getElementById('modalLimit').classList.add('show');
+    return;
+  }
+  const n = data.voyages.length + 1;
+  const nv = emptyVoyage(`Voyage ${n}`);
+  data.voyages.push(nv);
+  data.activeVoyageId = nv.id;
+  save();
+  renderAll();
 }
-function askRenameVoyage(){
-  var v=currentVoyage();
-  var input=document.getElementById('renameInput');
-  input.value=v.nom||'';
+
+function duplicateVoyage() {
+  if (data.voyages.length >= MAX_VOYAGES) {
+    document.getElementById('modalLimit').classList.add('show');
+    return;
+  }
+  const src = currentVoyage();
+  // Copie profonde via JSON, sans les coches
+  const copy = JSON.parse(JSON.stringify(src));
+  copy.id = 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  copy.nom = (src.nom || 'Voyage') + ' (copie)';
+  copy.activePerson = 0;
+  // Décocher tous les articles
+  copy.personnes.forEach(p => {
+    p.rubriques.forEach(r => {
+      r.items.forEach(it => { it.coche = false; });
+    });
+  });
+  data.voyages.push(copy);
+  data.activeVoyageId = copy.id;
+  save();
+  renderAll();
+  // Ouvrir directement la modale de renommage pour que l'utilisateur nomme sa copie
+  setTimeout(() => askRenameVoyage(), 100);
+}
+
+function askRenameVoyage() {
+  const v = currentVoyage();
+  const input = document.getElementById('renameInput');
+  input.value = v.nom || '';
   document.getElementById('modalRename').classList.add('show');
-  setTimeout(function(){input.focus();input.select();},50);
+  setTimeout(() => { input.focus(); input.select(); }, 50);
 }
-function confirmRename(){
-  var v=currentVoyage();
-  var val=document.getElementById('renameInput').value.trim();
-  v.nom=val||v.nom||'Voyage';save();closeModal('modalRename');renderVoyageSelect();
+function confirmRename() {
+  const v = currentVoyage();
+  const val = document.getElementById('renameInput').value.trim();
+  v.nom = val || v.nom || 'Voyage';
+  save();
+  closeModal('modalRename');
+  renderVoyageSelect();
 }
-function askDeleteVoyage(){
-  if(data.voyages.length<=1)return;
-  var v=currentVoyage();
-  document.getElementById('delVoyageName').textContent=v.nom||'sans nom';
+
+function askDeleteVoyage() {
+  if (data.voyages.length <= 1) return;
+  const v = currentVoyage();
+  document.getElementById('delVoyageName').textContent = v.nom || 'sans nom';
   document.getElementById('modalDeleteVoyage').classList.add('show');
 }
-function confirmDeleteVoyage(){
-  var idx=data.voyages.findIndex(function(v){return v.id===data.activeVoyageId;});
-  if(idx===-1)return;
-  data.voyages.splice(idx,1);
-  data.activeVoyageId=data.voyages[Math.max(0,idx-1)].id;
-  save();closeModal('modalDeleteVoyage');renderAll();
+function confirmDeleteVoyage() {
+  const idx = data.voyages.findIndex(v => v.id === data.activeVoyageId);
+  if (idx === -1) return;
+  data.voyages.splice(idx, 1);
+  // Sélectionner le voyage précédent, ou le premier
+  const newIdx = Math.max(0, idx - 1);
+  data.activeVoyageId = data.voyages[newIdx].id;
+  save();
+  closeModal('modalDeleteVoyage');
+  renderAll();
 }
 
-function renderTabs(){
-  var v=currentVoyage();
-  var c=document.getElementById('tabs');c.innerHTML='';
-  v.personnes.forEach(function(p,i){
-    var btn=document.createElement('button');
-    btn.className='tab'+(i===v.activePerson?' active':'');
-    var label=p.nom.trim()||('Pers. '+(i+1));
-    btn.innerHTML='<span class="num">P'+(i+1)+'</span>'+escapeHtml(label);
-    btn.onclick=function(){v.activePerson=i;save();renderAll();};
+// === Personnes ===
+function renderTabs() {
+  const v = currentVoyage();
+  const c = document.getElementById('tabs');
+  c.innerHTML = '';
+  v.personnes.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === v.activePerson ? ' active' : '');
+    const label = p.nom.trim() || `Pers. ${i+1}`;
+    btn.innerHTML = `<span class="num">P${i+1}</span>${escapeHtml(label)}`;
+    btn.onclick = () => { v.activePerson = i; save(); renderAll(); };
     c.appendChild(btn);
   });
 }
 
-function renderPanel(){
-  var v=currentVoyage();
-  var panel=document.getElementById('personPanel');panel.innerHTML='';
-  var p=v.personnes[v.activePerson];
-  var nameWrap=document.createElement('div');
-  nameWrap.className='person-name-wrap';
-  nameWrap.innerHTML='<label>Personne '+(v.activePerson+1)+' &mdash; Nom</label><input class="person-name-input" type="text" placeholder="Saisir le nom..." value="'+escapeAttr(p.nom)+'" />';
-  nameWrap.querySelector('input').addEventListener('input',function(e){p.nom=e.target.value;save();renderTabs();});
+function renderPanel() {
+  const v = currentVoyage();
+  const panel = document.getElementById('personPanel');
+  panel.innerHTML = '';
+  const p = v.personnes[v.activePerson];
+
+  const nameWrap = document.createElement('div');
+  nameWrap.className = 'person-name-wrap';
+  nameWrap.innerHTML = `
+    <label>Personne ${v.activePerson + 1} — Nom</label>
+    <input class="person-name-input" type="text" placeholder="Saisir le nom..." value="${escapeAttr(p.nom)}" />
+  `;
+  nameWrap.querySelector('input').addEventListener('input', e => {
+    p.nom = e.target.value;
+    save();
+    renderTabs();
+  });
   panel.appendChild(nameWrap);
 
-  p.rubriques.forEach(function(r,ri){
-    var div=document.createElement('div');div.className='rubrique';
-    div.innerHTML='<div class="rubrique-header"><input class="rubrique-title-input" type="text" placeholder="Rubrique '+(ri+1)+' (ex: V&ecirc;tements)" value="'+escapeAttr(r.titre)+'" /></div><div class="items" data-rub="'+ri+'"></div>';
-    div.querySelector('.rubrique-title-input').addEventListener('input',function(e){r.titre=e.target.value;save();});
-    var itemsBox=div.querySelector('.items');
-    r.items.forEach(function(it,ii){itemsBox.appendChild(buildItemRow(ri,ii));});
-    var addBtn=document.createElement('button');addBtn.className='add-item-btn';addBtn.textContent='+ Ajouter un article';
-    addBtn.onclick=function(){r.items.push({texte:'',coche:false});save();renderPanel();updateProgress();};
+  p.rubriques.forEach((r, ri) => {
+    const div = document.createElement('div');
+    div.className = 'rubrique';
+    div.innerHTML = `
+      <div class="rubrique-header">
+        <input class="rubrique-title-input" type="text" placeholder="Rubrique ${ri+1} (ex: Vêtements)" value="${escapeAttr(r.titre)}" />
+      </div>
+      <div class="items" data-rub="${ri}"></div>
+    `;
+    div.querySelector('.rubrique-title-input').addEventListener('input', e => {
+      r.titre = e.target.value;
+      save();
+    });
+
+    const itemsBox = div.querySelector('.items');
+    r.items.forEach((it, ii) => {
+      itemsBox.appendChild(buildItemRow(ri, ii));
+    });
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-item-btn';
+    addBtn.textContent = '+ Ajouter un article';
+    addBtn.onclick = () => {
+      r.items.push({ texte: '', coche: false });
+      save();
+      renderPanel();
+      updateProgress();
+    };
     itemsBox.appendChild(addBtn);
+
     panel.appendChild(div);
   });
 }
 
-function buildItemRow(ri,ii){
-  var v=currentVoyage(),p=v.personnes[v.activePerson],it=p.rubriques[ri].items[ii];
-  var row=document.createElement('div');row.className='item-row';
-  var check=document.createElement('button');check.className='check-btn'+(it.coche?' checked':'');check.textContent='✓';
-  check.onclick=function(){it.coche=!it.coche;save();renderPanel();updateProgress();};
-  var input=document.createElement('input');input.className='item-input'+(it.coche?' checked':'');input.type='text';input.placeholder='Article...';input.value=it.texte;
-  input.addEventListener('input',function(e){it.texte=e.target.value;save();});
-  var del=document.createElement('button');del.className='delete-item-btn';del.textContent='✕';
-  del.onclick=function(){p.rubriques[ri].items.splice(ii,1);if(p.rubriques[ri].items.length===0)p.rubriques[ri].items.push({texte:'',coche:false});save();renderPanel();updateProgress();};
-  row.appendChild(check);row.appendChild(input);row.appendChild(del);
+function buildItemRow(ri, ii) {
+  const v = currentVoyage();
+  const p = v.personnes[v.activePerson];
+  const it = p.rubriques[ri].items[ii];
+  const row = document.createElement('div');
+  row.className = 'item-row';
+
+  const check = document.createElement('button');
+  check.className = 'check-btn' + (it.coche ? ' checked' : '');
+  check.textContent = '✓';
+  check.onclick = () => {
+    it.coche = !it.coche;
+    save();
+    renderPanel();
+    updateProgress();
+  };
+
+  const input = document.createElement('input');
+  input.className = 'item-input' + (it.coche ? ' checked' : '');
+  input.type = 'text';
+  input.placeholder = 'Article...';
+  input.value = it.texte;
+  input.addEventListener('input', e => {
+    it.texte = e.target.value;
+    save();
+  });
+
+  const del = document.createElement('button');
+  del.className = 'delete-item-btn';
+  del.textContent = '✕';
+  del.onclick = () => {
+    p.rubriques[ri].items.splice(ii, 1);
+    if (p.rubriques[ri].items.length === 0) {
+      p.rubriques[ri].items.push({ texte: '', coche: false });
+    }
+    save();
+    renderPanel();
+    updateProgress();
+  };
+
+  row.appendChild(check);
+  row.appendChild(input);
+  row.appendChild(del);
   return row;
 }
 
-function updateProgress(){
-  var v=currentVoyage(),p=v.personnes[v.activePerson];
-  var total=0,done=0;
-  p.rubriques.forEach(function(r){r.items.forEach(function(it){if(it.texte.trim()!==''){total++;if(it.coche)done++;}});});
-  var pct=total===0?0:Math.round(100*done/total);
-  document.getElementById('progressFill').style.width=pct+'%';
-  document.getElementById('progressCount').textContent=done+' / '+total;
-  document.getElementById('progressLabel').textContent=p.nom.trim()||('Personne '+(v.activePerson+1));
+function updateProgress() {
+  const v = currentVoyage();
+  const p = v.personnes[v.activePerson];
+  let total = 0, done = 0;
+  p.rubriques.forEach(r => {
+    r.items.forEach(it => {
+      if (it.texte.trim() !== '') {
+        total++;
+        if (it.coche) done++;
+      }
+    });
+  });
+  const pct = total === 0 ? 0 : Math.round(100 * done / total);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = `${done} / ${total}`;
+  const personLabel = (p.nom.trim() || `Personne ${v.activePerson+1}`);
+  document.getElementById('progressLabel').textContent = personLabel;
 }
 
-function renderAll(){renderVoyageSelect();renderTabs();renderPanel();updateProgress();}
-function closeModal(id){document.getElementById(id).classList.remove('show');}
-function askResetAll(){document.getElementById('modalResetAll').classList.add('show');}
-function doResetAll(){data=defaultData();data.activeVoyageId=data.voyages[0].id;save();closeModal('modalResetAll');renderAll();}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function escapeAttr(s){return String(s).replace(/"/g,'&quot;');}
+function renderAll() {
+  renderVoyageSelect();
+  renderTabs();
+  renderPanel();
+  updateProgress();
+}
+
+// === Modales ===
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function askResetAll() { document.getElementById('modalResetAll').classList.add('show'); }
+function doResetAll() {
+  data = defaultData();
+  data.activeVoyageId = data.voyages[0].id;
+  save();
+  closeModal('modalResetAll');
+  renderAll();
+}
+
+// === Helpers ===
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s) {
+  return String(s).replace(/"/g, '&quot;');
+}
 
 renderAll();
 </script>
 
-<script>
-if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').then(function(r){console.log('SW:',r.scope);}).catch(function(e){console.log('SW error:',e);});});}
-</script>
 </body>
 </html>
